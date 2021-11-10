@@ -1,0 +1,27 @@
+PODS:
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
+    - FBSnapshotTestCase/Core
+  - LQAlertViewKit (0.1.0)
+
+DEPENDENCIES:
+  - FBSnapshotTestCase
+  - LQAlertViewKit (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - FBSnapshotTestCase
+
+EXTERNAL SOURCES:
+  LQAlertViewKit:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  LQAlertViewKit: bf437981bf02d9d9cfe6229dbb159eeff311772c
+
+PODFILE CHECKSUM: 359983f4b528db1b03af5d31b48fddec8c222f1f
+
+COCOAPODS: 1.10.1

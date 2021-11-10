@@ -1,0 +1,6 @@
+framework module LQAlertViewKit {
+  umbrella header "LQAlertViewKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

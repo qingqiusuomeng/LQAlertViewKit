@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		159E9013273B6872000C2779 /* LQAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 159E9012273B6872000C2779 /* LQAlertView.m */; };
 		2E84825A9B962EA15832D3C0 /* Pods_LQAlertViewKit_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 71E0B9F7B0680CA688C777E4 /* Pods_LQAlertViewKit_Tests.framework */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
@@ -38,6 +39,8 @@
 
 /* Begin PBXFileReference section */
 		03FE6BBF7D07F6213690B308 /* Pods-LQAlertViewKit_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LQAlertViewKit_Tests.debug.xcconfig"; path = "Target Support Files/Pods-LQAlertViewKit_Tests/Pods-LQAlertViewKit_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		159E9011273B6872000C2779 /* LQAlertView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LQAlertView.h; sourceTree = "<group>"; };
+		159E9012273B6872000C2779 /* LQAlertView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LQAlertView.m; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* LQAlertViewKit_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LQAlertViewKit_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -59,14 +62,14 @@
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		71E0B9F7B0680CA688C777E4 /* Pods_LQAlertViewKit_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LQAlertViewKit_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		72AFDE7CBC125B3035EA81C3 /* LQAlertViewKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = LQAlertViewKit.podspec; path = ../LQAlertViewKit.podspec; sourceTree = "<group>"; };
+		72AFDE7CBC125B3035EA81C3 /* LQAlertViewKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LQAlertViewKit.podspec; path = ../LQAlertViewKit.podspec; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9851E0B1EB57FB399D86E950 /* Pods-LQAlertViewKit_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LQAlertViewKit_Example.debug.xcconfig"; path = "Target Support Files/Pods-LQAlertViewKit_Example/Pods-LQAlertViewKit_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		AD2EF7D50C31A5C72E1620D5 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		AD2EF7D50C31A5C72E1620D5 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		CA29EC54557A08CC4D888A20 /* Pods-LQAlertViewKit_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LQAlertViewKit_Tests.release.xcconfig"; path = "Target Support Files/Pods-LQAlertViewKit_Tests/Pods-LQAlertViewKit_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		D75F78B41F4AE8E0ECD8D459 /* Pods-LQAlertViewKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LQAlertViewKit_Example.release.xcconfig"; path = "Target Support Files/Pods-LQAlertViewKit_Example/Pods-LQAlertViewKit_Example.release.xcconfig"; sourceTree = "<group>"; };
 		E646FC9D3E00025054E2D90E /* Pods_LQAlertViewKit_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LQAlertViewKit_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F03B9900DA4EB04CBD2E36F8 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		F03B9900DA4EB04CBD2E36F8 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +140,8 @@
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
 				6003F5A5195388D20070C39A /* LQViewController.h */,
 				6003F5A6195388D20070C39A /* LQViewController.m */,
+				159E9011273B6872000C2779 /* LQAlertView.h */,
+				159E9012273B6872000C2779 /* LQAlertView.m */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
@@ -193,7 +198,6 @@
 				03FE6BBF7D07F6213690B308 /* Pods-LQAlertViewKit_Tests.debug.xcconfig */,
 				CA29EC54557A08CC4D888A20 /* Pods-LQAlertViewKit_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -259,6 +263,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -383,6 +388,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				159E9013273B6872000C2779 /* LQAlertView.m in Sources */,
 				6003F59E195388D20070C39A /* LQAppDelegate.m in Sources */,
 				6003F5A7195388D20070C39A /* LQViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,

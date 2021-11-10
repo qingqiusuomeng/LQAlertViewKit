@@ -1,0 +1,6 @@
+framework module Pods_LQAlertViewKit_Tests {
+  umbrella header "Pods-LQAlertViewKit_Tests-umbrella.h"
+
+  export *
+  module * { export * }
+}
