@@ -4,6 +4,7 @@ platform :ios, '9.0'
 
 target 'LQAlertViewKit_Example' do
   pod 'LQAlertViewKit', :path => '../'
+   pod 'SDAutoLayout'
 
   target 'LQAlertViewKit_Tests' do
     inherit! :search_paths
