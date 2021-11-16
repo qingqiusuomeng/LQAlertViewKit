@@ -7,16 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
-@class AlertViewModel;
+#import "LQAlertViewModel.h"
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LQAlertView : UIView
-@property(nonatomic,strong)AlertViewModel *model;
+@property(nonatomic,strong)LQAlertViewModel *model;
 @property (nonatomic, copy) void(^alertLeftBtnBlock)(void);
 @property (nonatomic, copy) void(^alertRightBtnBlock)(void);
 @property (nonatomic, copy) void(^alertRightBtnContentBlock)(NSString *content);
-- (instancetype)alertViewWithModel:(AlertViewModel *)model;
-- (instancetype)alertInputViewWithModel:(AlertViewModel *)model;
+- (instancetype)alertViewWithModel:(LQAlertViewModel *)model;
+- (instancetype)alertInputViewWithModel:(LQAlertViewModel *)model;
 - (void)showAlertView;
 
 - (void)setTitleColor:(UIColor *)color;
@@ -34,13 +34,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setSureFont:(UIFont *)font;
 - (void)setInputTextFont:(UIFont *)font;
 
-@end
-
-@interface AlertViewModel : NSObject
-@property (nonatomic,copy) NSString *title;
-@property (nonatomic,copy) NSString *message;
-@property (nonatomic,copy) NSString *leftTitle;
-@property (nonatomic,copy) NSString *rightTitle;
 @end
 
 NS_ASSUME_NONNULL_END

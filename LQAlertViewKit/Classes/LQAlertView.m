@@ -11,12 +11,10 @@
 ///alertView 宽
 #define AlertW 280
 #define AlertTitleH 30
-#define AlertMessageH 50
-#define AlertInputH 50
-#define AlertHLineAndBtnH 45
+#define AlertInputH 30
 ///各个栏目之间的距离
 #define XLSpace 10.0
-@interface LQAlertView()
+@interface LQAlertView()<UITextViewDelegate>
 @property (nonatomic,strong)UIView *alertView;
 @property (nonatomic,strong) UILabel *titleLabel;
 @property (nonatomic,strong) UILabel *messageLabel;
@@ -24,12 +22,13 @@
 @property (nonatomic,strong) UIButton *rightBtn;
 @property (nonatomic,strong) UIView *hLineView;
 @property (nonatomic,strong) UIView *vLineView;
-@property (strong, nonatomic) UITextField *inputText;
+@property (strong, nonatomic) UITextView *inputText;
 
 @property (strong, nonatomic) NSString *title;
 @property (strong, nonatomic) NSString *message;
 @property (strong, nonatomic) NSString *leftTitle;
 @property (strong, nonatomic) NSString *rightTitle;
+
 
 @end
 
@@ -38,11 +37,14 @@
 
 
 
-- (LQAlertView *)alertViewWithModel:(AlertViewModel *)model
+- (LQAlertView *)alertViewWithModel:(LQAlertViewModel *)model
 {
     if (self == [super init]) {
         self.frame = [UIScreen mainScreen].bounds;
-        self.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.6];
+        self.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action: @selector(hiddenAlertView)];
+        self.userInteractionEnabled = YES;
+        [self addGestureRecognizer:tap];
         
         self.title = model.title;
         self.message = model.message;
@@ -110,41 +112,87 @@
     return self;
 }
 
-- (instancetype)alertInputViewWithModel:(AlertViewModel *)model{
+- (instancetype)alertInputViewWithModel:(LQAlertViewModel *)model{
     if (self == [super init]) {
         self.frame = [UIScreen mainScreen].bounds;
-        self.backgroundColor = [UIColor colorWithWhite:0.8 alpha:0.6];
-        //有input的情况就不考虑message
+        self.backgroundColor = [UIColor colorWithRed:0/255.0 green:0/255.0 blue:0/255.0 alpha:0.6];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action: @selector(hiddenAlertView)];
+        self.userInteractionEnabled = YES;
+        [self addGestureRecognizer:tap];
+        self.title = model.title;
+        self.message = model.message;
+        self.leftTitle = model.leftTitle;
+        self.rightTitle = model.rightTitle;
         
-        if (!model.title.length && !model.leftTitle.length && !model.rightTitle.length) {//17.只有input的情况
+        //有message的情况
+        if (!model.message.length) {
+            if (!model.title.length && !model.leftTitle.length && !model.rightTitle.length) {//17.只有input的情况
+                
+                [self createInputText];
+            }
+            else if(model.title.length && !model.leftTitle.length && !model.rightTitle.length){// 18.只有title和input
+                [self createTitleLabelAndInputText];
+            }
+            else if(!model.title.length && model.leftTitle.length && !model.rightTitle.length){// 19.只有取消和input
+                [self createCancelBtnAndInputText];
+            }
+            else if(!model.title.length && !model.leftTitle.length && model.rightTitle.length){//20.只有确认和input
+                [self createSureBtnAndInputText];
+            }
             
-            [self createInputText];
-        }
-        else if(model.title.length && !model.leftTitle.length && !model.rightTitle.length){// 18.只有title和input
-            [self createTitleLabelAndInputText];
-        }
-        else if(!model.title.length && model.leftTitle.length && !model.rightTitle.length){// 19.只有取消和input
-            [self createCancelBtnAndInputText];
-        }
-        else if(!model.title.length && !model.leftTitle.length && model.rightTitle.length){//20.只有确认和input
-            [self createSureBtnAndInputText];
+            else if(model.title.length && model.leftTitle.length && !model.rightTitle.length){//21.只有title，input，取消
+                [self createTitleLabelAndCancelBtnAndInputText];
+            }
+            
+            else if(model.title.length  && !model.leftTitle.length && model.rightTitle.length){// 22.只有title，input，确认
+                [self createTitleLabelAndSureBtnAndInputText];
+            }
+            
+            else if(model.title.length && model.leftTitle.length && model.rightTitle.length){//23.title、leftTitle和rightTitle不空的情况
+                [self createTitleLabelAndCancelAndSureBtn];
+            }
+            
+            else if(!model.title.length && model.leftTitle.length && model.rightTitle.length){//24.intpu,leftTitle和rightTitle不空的情况
+                [self createTitleLabelAndCancelAndSureBtnAndInputText];
+            }
+        }else{
+            // 25.只有message和input的情况
+            if(!model.title.length && !model.leftTitle.length && !model.rightTitle.length){
+                [self createMessageLableAndInputText];
+            }
+            //26.只有title和message和input的情况
+            else if(model.title.length && !model.leftTitle.length && !model.rightTitle.length){
+                [self createTitleLabelAndMessageLableAndInputText];
+            }
+            //27.只有message和取消按钮和input的情况
+            else if(!model.title.length && model.leftTitle.length && !model.rightTitle.length){
+                [self createMessageLableAndInputTextAndCancelBtn];
+            }
+            // 28.只有message和确认按钮和input的情况
+            else if(!model.title.length && !model.leftTitle.length && model.rightTitle.length){
+                [self createMessageLableAndInputTextAndSureBtn];
+            }
+            //29.只有title、message、取消按钮和input的情况
+            else if(model.title.length && model.leftTitle.length && !model.rightTitle.length){
+                [self createTitleLabelAndMessageLableAndInputTextAndCancelBtn];
+            }
+            //30.只有title、message、确认按钮和input的情况
+            else if(model.title.length && !model.leftTitle.length && model.rightTitle.length){
+                [self createTitleLabelAndMessageLableAndInputTextAndSureBtn];
+            }
+            // 31.只有message、取消和确认按钮和input的情况
+            else if(!model.title.length && model.leftTitle.length && model.rightTitle.length){
+                [self createMessageLableAndInputTextAndCancelBtnAndSureBtn];
+            }
+            //32.只有title,message、取消和确认按钮和input的情况
+            else if(model.title.length && model.leftTitle.length && model.rightTitle.length){
+                [self createAllAndInputText];
+            }
         }
         
-        else if(model.title.length && model.leftTitle.length && !model.rightTitle.length){//21.只有title，input，取消
-            [self createTitleLabelAndCancelBtnAndInputText];
-        }
         
-        else if(model.title.length  && !model.leftTitle.length && model.rightTitle.length){// 22.只有title，input，确认
-            [self createTitleLabelAndSureBtnAndInputText];
-        }
         
-        else if(model.title.length && model.leftTitle.length && model.rightTitle.length){//23.title、leftTitle和rightTitle不空的情况
-            [self createTitleLabelAndCancelAndSureBtn];
-        }
         
-        else if(!model.title.length && model.leftTitle.length && model.rightTitle.length){//24.intpu,leftTitle和rightTitle不空的情况
-            [self createAllAndInputText];
-        }
     }
     return self;
 }
@@ -173,6 +221,14 @@
  22.只有title，input，确认
  23.只有input，取消，确认
  24.只有title,input，取消，确认
+ 25.只有message和input的情况
+ 26.只有title和message和input的情况
+ 27.只有message和取消按钮和input的情况
+ 28.只有message和确认按钮和input的情况
+ 29.只有title、message、取消按钮和input的情况
+ 30.只有title、message、确认按钮和input的情况
+ 31.只有message、取消和确认按钮和input的情况
+ 32.只有message、取消和确认按钮和input的情况
  
  */
 
@@ -346,11 +402,11 @@
 }
 //只有title和取消按钮的情况，跟只有取消按钮布局一样
 - (void)createTitleAndLeftTitle{
-   
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.titleLabel,self.hLineView,self.leftBtn]];
     //titleLabel的布局
-   [self layoutSigleTitleLabel];
+    [self layoutSigleTitleLabel];
     
     self.hLineView.sd_layout
     .topSpaceToView(self.titleLabel,XLSpace)
@@ -365,7 +421,7 @@
 }
 //只有title和确认按钮的情况，
 - (void)createTitleAndRightTitle{
-   
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.titleLabel,self.hLineView,self.rightBtn]];
     //titleLabel的布局
@@ -383,7 +439,7 @@
 }
 //只有message和取消按钮的情况
 - (void)createMessageLableAndCancelBtn{
-  
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.messageLabel,self.hLineView,self.leftBtn]];
     //messageLabel的布局
@@ -421,7 +477,7 @@
 
 //只有取消按钮和确认按钮的情况
 - (void)createCancelBtnAndSureBtn{
-
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.hLineView, self.vLineView,self.leftBtn,self.rightBtn]];
     self.hLineView.sd_layout
@@ -437,7 +493,7 @@
 
 //只有title、message、取消按钮的情况
 - (void)createTitleLabelAndMessageLabelAndCancelBtn{
-
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.titleLabel,self.messageLabel,self.hLineView,self.leftBtn]];
     //titleLabel和message组合的布局
@@ -471,11 +527,11 @@
     //rightBtn的布局
     [self layoutSigleSureBtn];
     [self.alertView setupAutoHeightWithBottomView:self.rightBtn bottomMargin:0];
-  
+    
 }
 //只有title、取消和确认按钮的情况,这个布局跟只有取消和确认按钮一样
 - (void)createTitleLabelAndCancelAndSureBtn{
-   
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.titleLabel,self.hLineView, self.vLineView,self.leftBtn,self.rightBtn]];
     
@@ -493,7 +549,7 @@
 }
 //只有message、取消和确认按钮的情况
 - (void)createMessageLabelAndCancelAndSureBtn{
-  
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.messageLabel,self.hLineView, self.vLineView,self.leftBtn,self.rightBtn]];
     
@@ -512,7 +568,7 @@
 }
 //四个都有的情况
 - (void)createAllUI{
-
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.titleLabel,self.messageLabel,self.hLineView, self.vLineView,self.leftBtn,self.rightBtn]];
     
@@ -535,14 +591,13 @@
 - (void)createInputText{
     
     [self createCommonAlertView];
-   
+    
     [self.alertView sd_addSubviews:@[self.inputText]];
     self.inputText.sd_layout
     .topSpaceToView(self.alertView, XLSpace)
     .leftSpaceToView(self.alertView, XLSpace)
     .rightSpaceToView(self.alertView, XLSpace)
-    .minHeightIs(30);
-    self.inputText.text = @"sknkdsngksgn放放风说拜拜 的毕恭毕敬司法鉴定是否收到就不是v继续进行";
+    .heightIs(AlertInputH);
     [self.alertView setupAutoHeightWithBottomView:self.inputText bottomMargin:XLSpace];
 }
 //18.只有title和input
@@ -557,12 +612,13 @@
     .topSpaceToView(self.titleLabel, 0)
     .leftSpaceToView(self.alertView, XLSpace)
     .rightSpaceToView(self.alertView, XLSpace)
-    .minHeightIs(30);
+    .heightIs(AlertInputH);
+    
     [self.alertView setupAutoHeightWithBottomView:self.inputText bottomMargin:XLSpace];
 }
 //19.只有取消和input
 - (void)createCancelBtnAndInputText{
-
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.inputText,self.hLineView,self.leftBtn]];
     //inputText的布局
@@ -570,7 +626,7 @@
     .topSpaceToView(self.alertView, XLSpace)
     .leftSpaceToView(self.alertView, XLSpace)
     .rightSpaceToView(self.alertView, XLSpace)
-    .minHeightIs(30);
+    .heightIs(AlertInputH);
     
     self.hLineView.sd_layout
     .topSpaceToView(self.inputText,XLSpace)
@@ -584,7 +640,7 @@
 }
 //20.只有确认和input
 - (void)createSureBtnAndInputText{
-   
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.inputText,self.hLineView,self.rightBtn]];
     //inputText的布局
@@ -592,7 +648,7 @@
     .topSpaceToView(self.alertView, XLSpace)
     .leftSpaceToView(self.alertView, XLSpace)
     .rightSpaceToView(self.alertView, XLSpace)
-    .minHeightIs(30);
+    .heightIs(AlertInputH);
     
     self.hLineView.sd_layout
     .topSpaceToView(self.inputText,XLSpace)
@@ -616,7 +672,7 @@
     .topSpaceToView(self.titleLabel, XLSpace)
     .leftSpaceToView(self.alertView, XLSpace)
     .rightSpaceToView(self.alertView, XLSpace)
-    .minHeightIs(30);
+    .heightIs(AlertInputH);
     
     self.hLineView.sd_layout
     .topSpaceToView(self.inputText,XLSpace)
@@ -630,7 +686,7 @@
 }
 //22.只有title，input，确认
 - (void)createTitleLabelAndSureBtnAndInputText{
-   
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.titleLabel,self.inputText,self.hLineView,self.rightBtn]];
     //titleLabel的布局
@@ -640,7 +696,7 @@
     .topSpaceToView(self.titleLabel, XLSpace)
     .leftSpaceToView(self.alertView, XLSpace)
     .rightSpaceToView(self.alertView, XLSpace)
-    .minHeightIs(30);
+    .heightIs(AlertInputH);
     
     self.hLineView.sd_layout
     .topSpaceToView(self.inputText,XLSpace)
@@ -654,15 +710,15 @@
 }
 //23.只有input，取消，确认
 - (void)createCancelBtnAndSureBtnAndInputText{
-   
+    
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.inputText,self.hLineView, self.vLineView,self.leftBtn,self.rightBtn]];
     
     self.inputText.sd_layout
     .topSpaceToView(self.alertView, XLSpace)
-    .leftEqualToView(self.alertView)
-    .rightEqualToView(self.alertView)
-    .minHeightIs(30);
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
     
     self.hLineView.sd_layout
     .topSpaceToView(self.messageLabel, XLSpace)
@@ -676,7 +732,7 @@
 }
 
 //24.只有title,input，取消，确认
-- (void)createAllAndInputText{
+- (void)createTitleLabelAndCancelAndSureBtnAndInputText{
     
     [self createCommonAlertView];
     [self.alertView sd_addSubviews:@[self.titleLabel,self.inputText,self.hLineView, self.vLineView,self.leftBtn,self.rightBtn]];
@@ -685,12 +741,12 @@
     
     self.inputText.sd_layout
     .topSpaceToView(self.titleLabel, XLSpace)
-    .leftEqualToView(self.alertView)
-    .rightEqualToView(self.alertView)
-    .minHeightIs(30);
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
     
     self.hLineView.sd_layout
-    .topSpaceToView(self.messageLabel, XLSpace)
+    .topSpaceToView(self.inputText, XLSpace)
     .leftEqualToView(self.alertView)
     .rightEqualToView(self.alertView)
     .heightIs(1);
@@ -698,13 +754,178 @@
     [self layoutCancelBtnAndSureBtn];
     [self.alertView setupAutoHeightWithBottomView:self.vLineView bottomMargin:0];
 }
-
+//25.只有message和input的情况
+- (void)createMessageLableAndInputText{
+    
+    [self createCommonAlertView];
+    [self.alertView sd_addSubviews:@[self.messageLabel,self.inputText]];
+    //messageLabel的布局
+    [self layoutSigleMessageLabel];
+    
+    self.inputText.sd_layout
+    .topSpaceToView(self.titleLabel, XLSpace)
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
+    [self.alertView setupAutoHeightWithBottomView:self.inputText bottomMargin:XLSpace];
+}
+//26.只有title和message和input的情况
+- (void)createTitleLabelAndMessageLableAndInputText{
+    
+    [self createCommonAlertView];
+    [self.alertView sd_addSubviews:@[self.titleLabel,self.messageLabel,self.inputText]];
+    //TitleLabel和messageLabel的布局
+    [self layoutTitleLabelAndMessageLabel];
+    
+    self.inputText.sd_layout
+    .topSpaceToView(self.messageLabel, XLSpace)
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
+    [self.alertView setupAutoHeightWithBottomView:self.inputText bottomMargin:XLSpace];
+}
+//27.只有message和取消按钮和input的情况
+- (void)createMessageLableAndInputTextAndCancelBtn{
+    
+    [self createCommonAlertView];
+    [self.alertView sd_addSubviews:@[self.messageLabel,self.inputText,self.hLineView,self.leftBtn]];
+    //messageLabel的布局
+    [self layoutSigleMessageLabel];
+    
+    self.inputText.sd_layout
+    .topSpaceToView(self.messageLabel, XLSpace)
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
+    
+    self.hLineView.sd_layout
+    .topSpaceToView(self.inputText,XLSpace)
+    .leftEqualToView(self.alertView)
+    .rightEqualToView(self.alertView)
+    .heightIs(1);
+    
+    [self layoutSigleCancelBtn];
+    [self.alertView setupAutoHeightWithBottomView:self.leftBtn bottomMargin:0];
+}
+//28.只有message和确认按钮和input的情况
+- (void)createMessageLableAndInputTextAndSureBtn{
+    
+    [self createCommonAlertView];
+    [self.alertView sd_addSubviews:@[self.messageLabel,self.inputText,self.hLineView,self.rightBtn]];
+    //messageLabel的布局
+    [self layoutSigleMessageLabel];
+    
+    self.inputText.sd_layout
+    .topSpaceToView(self.messageLabel, XLSpace)
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
+    
+    self.hLineView.sd_layout
+    .topSpaceToView(self.inputText,XLSpace)
+    .leftEqualToView(self.alertView)
+    .rightEqualToView(self.alertView)
+    .heightIs(1);
+    
+    [self layoutSigleSureBtn];
+    [self.alertView setupAutoHeightWithBottomView:self.rightBtn bottomMargin:0];
+}
+//29.只有title、message、取消按钮和input的情况
+- (void)createTitleLabelAndMessageLableAndInputTextAndCancelBtn{
+    
+    [self createCommonAlertView];
+    [self.alertView sd_addSubviews:@[self.titleLabel,self.messageLabel,self.inputText,self.hLineView,self.leftBtn]];
+    //title和messageLabel的布局
+    [self layoutTitleLabelAndMessageLabel];
+    
+    self.inputText.sd_layout
+    .topSpaceToView(self.messageLabel, XLSpace)
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
+    
+    self.hLineView.sd_layout
+    .topSpaceToView(self.inputText,XLSpace)
+    .leftEqualToView(self.alertView)
+    .rightEqualToView(self.alertView)
+    .heightIs(1);
+    
+    [self layoutSigleCancelBtn];
+    [self.alertView setupAutoHeightWithBottomView:self.leftBtn bottomMargin:0];
+}
+//30.只有title、message、确认按钮和input的情况
+- (void)createTitleLabelAndMessageLableAndInputTextAndSureBtn{
+    
+    [self createCommonAlertView];
+    [self.alertView sd_addSubviews:@[self.titleLabel,self.messageLabel,self.inputText,self.hLineView,self.rightBtn]];
+    //title和messageLabel的布局
+    [self layoutTitleLabelAndMessageLabel];
+    
+    self.inputText.sd_layout
+    .topSpaceToView(self.messageLabel, XLSpace)
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
+    
+    self.hLineView.sd_layout
+    .topSpaceToView(self.inputText,XLSpace)
+    .leftEqualToView(self.alertView)
+    .rightEqualToView(self.alertView)
+    .heightIs(1);
+    
+    [self layoutSigleCancelBtn];
+    [self.alertView setupAutoHeightWithBottomView:self.rightBtn bottomMargin:0];
+}
+//31.只有message、取消和确认按钮和input的情况
+- (void)createMessageLableAndInputTextAndCancelBtnAndSureBtn{
+    
+    [self createCommonAlertView];
+    [self.alertView sd_addSubviews:@[self.messageLabel,self.inputText,self.hLineView,self.vLineView,self.leftBtn,self.rightBtn]];
+    //messageLabel的布局
+    [self layoutSigleMessageLabel];
+    
+    self.inputText.sd_layout
+    .topSpaceToView(self.messageLabel, XLSpace)
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
+    
+    self.hLineView.sd_layout
+    .topSpaceToView(self.inputText, XLSpace)
+    .leftEqualToView(self.alertView)
+    .rightEqualToView(self.alertView)
+    .heightIs(1);
+    [self layoutCancelBtnAndSureBtn];
+    [self.alertView setupAutoHeightWithBottomView:self.vLineView bottomMargin:0];
+}
+//32.只有Title,message、取消和确认按钮和input的情况
+- (void)createAllAndInputText{
+    
+    [self createCommonAlertView];
+    [self.alertView sd_addSubviews:@[self.titleLabel,self.messageLabel,self.inputText,self.hLineView,self.vLineView,self.leftBtn,self.rightBtn]];
+    //Title和messageLabel的布局
+    [self layoutTitleLabelAndMessageLabel];
+    
+    self.inputText.sd_layout
+    .topSpaceToView(self.messageLabel, XLSpace)
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(AlertInputH);
+    
+    self.hLineView.sd_layout
+    .topSpaceToView(self.inputText, XLSpace)
+    .leftEqualToView(self.alertView)
+    .rightEqualToView(self.alertView)
+    .heightIs(1);
+    [self layoutCancelBtnAndSureBtn];
+    [self.alertView setupAutoHeightWithBottomView:self.vLineView bottomMargin:0];
+}
 
 -(UIView *)alertView{
     if (!_alertView) {
         _alertView = [[UIView alloc]init];
         _alertView.layer.position = self.center;
-        _alertView.backgroundColor = [UIColor whiteColor];
+        _alertView.backgroundColor = [UIColor colorWithRed:255/255.0 green:255/255.0 blue:255/255.0 alpha:0.9];
         _alertView.layer.cornerRadius = 14;
         _alertView.layer.masksToBounds = YES;
     }
@@ -727,24 +948,69 @@
         _messageLabel.numberOfLines = 0;
         _messageLabel.textAlignment = NSTextAlignmentCenter;
         _messageLabel.text = self.message;
-        _messageLabel.layer.borderColor = [UIColor colorWithRed:125/255.0 green:125/255.0 blue:128/255.0 alpha:1].CGColor;
+        _messageLabel.textColor = [UIColor colorWithRed:125/255.0 green:125/255.0 blue:128/255.0 alpha:1];
         _messageLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:14.0];
     }
     return _messageLabel;
 }
 
-- (UITextField *)inputText{
+- (UITextView *)inputText{
     if (!_inputText) {
-        _inputText = [[UITextField alloc]init];
+        _inputText = [[UITextView alloc]init];
         _inputText.layer.cornerRadius = 3;
-        _inputText.layer.borderColor = [UIColor colorWithRed:125/255.0 green:125/255.0 blue:128/255.0 alpha:1].CGColor;
-        _titleLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:14.0];
+        _inputText.layer.borderColor = [UIColor colorWithRed:234/255.0 green:234/255.0 blue:235/255.0 alpha:1].CGColor;
+        _inputText.textColor = [UIColor colorWithRed:125/255.0 green:125/255.0 blue:128/255.0 alpha:1];
+        _inputText.font = [UIFont fontWithName:@"PingFangSC-Regular" size:14.0];
         _inputText.layer.borderWidth = 1;
         _inputText.layer.masksToBounds = YES;
-        _inputText.enabled = YES;
+        _inputText.delegate = self;
         [_inputText becomeFirstResponder];
     }
     return _inputText;
+}
+
+-(void)textViewDidChange:(UITextView *)textView{
+    
+    static CGFloat maxHeight =60.0f;
+    
+    CGRect frame = textView.frame;
+    
+    CGSize constraintSize = CGSizeMake(frame.size.width, MAXFLOAT);
+    
+    CGSize size = [textView sizeThatFits:constraintSize];
+    
+    if (size.height<=frame.size.height) {
+        
+        size.height=frame.size.height;
+        
+    }else{
+        
+        if (size.height >= maxHeight)
+            
+        {
+            
+            size.height = maxHeight;
+            
+            textView.scrollEnabled = YES;  // 允许滚动
+            
+        }
+        
+        else
+            
+        {
+            
+            textView.scrollEnabled = NO;    // 不允许滚动
+            
+        }
+        
+    }
+    [textView updateLayout];
+    self.inputText.sd_layout
+    .topSpaceToView(self.messageLabel, XLSpace)
+    .leftSpaceToView(self.alertView, XLSpace)
+    .rightSpaceToView(self.alertView, XLSpace)
+    .heightIs(size.height);
+    
 }
 
 -(UIButton *)leftBtn{
@@ -849,12 +1115,13 @@
 }
 - (void)showAlertView {
     UIWindow *currentWindow = [UIApplication sharedApplication].keyWindow;
+    
     [currentWindow addSubview:self];
 }
 
 - (void)hiddenAlertView {
     UIWindow *currentWindow = [UIApplication sharedApplication].keyWindow;
     [currentWindow removeFromSuperview];
-  //  self = nil;
+    [self removeFromSuperview];
 }
 @end
